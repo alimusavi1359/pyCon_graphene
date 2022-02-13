@@ -1,0 +1,6 @@
+Django==3.2.12
+pillow
+graphene-django
+django-graphql-jwt
+graphene-file-upload
+django-filter

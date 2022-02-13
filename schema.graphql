@@ -1,0 +1,134 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type BlogType {
+  id: ID!
+  title: String!
+  description: String
+  owner: ProfileType!
+  posts: [PostType]
+}
+
+type CommentType {
+  id: ID!
+  post: PostNode!
+  user: ProfileType
+  body: String!
+}
+
+input CreatePostInput {
+  blogId: Int!
+  title: String!
+  body: String!
+  image: Upload
+  isPublic: Boolean
+  publishDate: Date
+}
+
+scalar Date
+
+scalar DateTime
+
+type DeleteTagPost {
+  post: PostType
+}
+
+type Login {
+  user: UserType
+  token: String
+}
+
+type Mutation {
+  login(password: String!, username: String!): Login
+  createPost(input: CreatePostInput!): PostType
+  tagPost(postId: Int!, tagsId: [Int]): TagPost
+  deleteTagPost(postId: Int!, tagsId: [Int]): DeleteTagPost
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type PostNode implements Node {
+  id: ID!
+  title: String!
+  body: String!
+  isPublic: Boolean!
+  tags: [TagType!]!
+}
+
+type PostNodeConnection {
+  pageInfo: PageInfo!
+  edges: [PostNodeEdge]!
+}
+
+type PostNodeEdge {
+  node: PostNode
+  cursor: String!
+}
+
+type PostType {
+  id: ID!
+  blog: BlogType!
+  title: String!
+  body: String!
+  image: String
+  isPublic: Boolean!
+  publishDate: Date
+  tags: [TagType!]!
+  comments: [CommentType!]!
+}
+
+type ProfileType {
+  id: ID!
+  user: UserType
+  firstName: String
+  lastName: String
+  blogs: [BlogType!]!
+  comments: [CommentType!]!
+}
+
+type Query {
+  me: UserType
+  users: [UserType]
+  blogs: [BlogType]
+  posts: [PostType]
+  tags: [TagType]
+  tagByName(name: String!): [TagType]
+}
+
+type TagPost {
+  post: PostType
+}
+
+type TagType {
+  id: ID!
+  name: String!
+  posts(offset: Int, before: String, after: String, first: Int, last: Int, title: String, title_Icontains: String, title_Istartswith: String, tags_Id_In: [String]): PostNodeConnection!
+}
+
+scalar Upload
+
+type UserType {
+  id: ID!
+  password: String!
+  lastLogin: DateTime
+  isSuperuser: Boolean!
+  username: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  isStaff: Boolean!
+  isActive: Boolean!
+  dateJoined: DateTime!
+  profile: ProfileType
+}
